@@ -28,6 +28,8 @@ enum charybdis_keymap_layers {
     LAYER_POINTER,
     LAYER_NUMERAL,
     LAYER_SYMBOLS,
+    LAYER_GAMING,
+    LAYER_GAMING_AUX,
 };
 
 // Automatically enable sniping-mode on the pointer layer.
@@ -50,6 +52,7 @@ static uint16_t auto_pointer_layer_timer = 0;
 #define TAB_FUN LT(LAYER_FUNCTION, KC_TAB)
 #define ENT_SYM LT(LAYER_SYMBOLS, KC_ENT)
 #define BSP_NUM LT(LAYER_NUMERAL, KC_BSPC)
+#define ESC_AUX LT(LAYER_GAMING_AUX, KC_ESC)
 #define _L_PTR(KC) LT(LAYER_POINTER, KC)
 
 #ifndef POINTING_DEVICE_ENABLE
@@ -60,11 +63,11 @@ static uint16_t auto_pointer_layer_timer = 0;
 #endif // !POINTING_DEVICE_ENABLE
 
 // clang-format off
-/** \brief QWERTY layout (3 rows, 10 columns). */
+/** \brief Colemak layout (3 rows, 10 columns). */
 #define LAYOUT_LAYER_BASE                                                                     \
-       KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P, \
-       KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L, KC_QUOT, \
-       KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, \
+       KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,    KC_J,    KC_L,    KC_U,    KC_Y, KC_QUOT, \
+       KC_A,    KC_R,    KC_S,    KC_T,    KC_D,    KC_H,    KC_N,    KC_E,    KC_I, KC_O,    \
+       KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, \
                       ESC_MED, SPC_NAV, TAB_FUN, ENT_SYM, BSP_NUM
 
 /** Convenience row shorthands. */
@@ -134,13 +137,13 @@ static uint16_t auto_pointer_layer_timer = 0;
  *
  * Primary left-hand layer (right home thumb) is numerals and symbols. Numerals
  * are in the standard numpad locations with symbols in the remaining positions.
- * `KC_DOT` is duplicated from the base layer.
+ * Also provides entry to the gaming layer.
  */
 #define LAYOUT_LAYER_NUMERAL                                                                  \
-    KC_LBRC,    KC_7,    KC_8,    KC_9, KC_RBRC, _______________DEAD_HALF_ROW_______________, \
-    KC_SCLN,    KC_4,    KC_5,    KC_6,  KC_EQL, ______________HOME_ROW_GACS_R______________, \
-     KC_GRV,    KC_1,    KC_2,    KC_3, KC_BSLS, _______________DEAD_HALF_ROW_______________, \
-                       KC_DOT,    KC_0, KC_MINS, XXXXXXX, _______
+    KC_LBRC, KC_BSLS, KC_SCLN,  KC_EQL, KC_RBRC, _______________DEAD_HALF_ROW_______________, \
+    KC_1,       KC_2,    KC_3,    KC_4,    KC_5, ______________HOME_ROW_GACS_R______________, \
+    KC_6,       KC_7,    KC_8,    KC_9,    KC_0, _______________DEAD_HALF_ROW_______________, \
+             TO(LAYER_GAMING),  KC_GRV, KC_MINS, XXXXXXX, _______
 
 /**
  * \brief Symbols layer.
@@ -154,6 +157,30 @@ static uint16_t auto_pointer_layer_timer = 0;
     KC_COLN,  KC_DLR, KC_PERC, KC_CIRC, KC_PLUS, ______________HOME_ROW_GACS_R______________, \
     KC_TILD, KC_EXLM,   KC_AT, KC_HASH, KC_PIPE, _______________DEAD_HALF_ROW_______________, \
                       KC_LPRN, KC_RPRN, KC_UNDS, _______, XXXXXXX
+
+/**
+ * \brief Gaming layer.
+ *
+ * Last left-hand layer that largely mimics the QWERTY layout (right shifted one col), for gaming.
+ *
+ */
+#define LAYOUT_LAYER_GAMING                                                                   \
+    KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    \
+    KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    \
+    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M, KC_COMM,  KC_DOT,    \
+                   KC_LCTL,  KC_SPC, MO(LAYER_GAMING_AUX), ESC_AUX, TO(LAYER_BASE)
+
+/**
+ * \brief Gaming-aux layer.
+ *
+ * Aux gaming layer.
+ *
+ */
+#define LAYOUT_LAYER_GAMING_AUX                                                               \
+    KC_M,    KC_I,    KC_O,    KC_P,  KC_ESC,    KC_PSCR,   KC_F7,   KC_F8,   KC_F9,  KC_F12, \
+    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_SCRL,   KC_F4,   KC_F5,   KC_F6,  KC_F11, \
+    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_PAUS,   KC_F1,   KC_F2,   KC_F3,  KC_F10, \
+                   XXXXXXX, XXXXXXX, _______, XXXXXXX, XXXXXXX
 
 /**
  * \brief Add Home Row mod to a layout.
@@ -212,12 +239,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [LAYER_NUMERAL] = LAYOUT_wrapper(LAYOUT_LAYER_NUMERAL),
   [LAYER_POINTER] = LAYOUT_wrapper(LAYOUT_LAYER_POINTER),
   [LAYER_SYMBOLS] = LAYOUT_wrapper(LAYOUT_LAYER_SYMBOLS),
+  [LAYER_GAMING] = LAYOUT_wrapper(LAYOUT_LAYER_GAMING),
+  [LAYER_GAMING_AUX] = LAYOUT_wrapper(LAYOUT_LAYER_GAMING_AUX),
 };
 // clang-format on
 
 #ifdef POINTING_DEVICE_ENABLE
 #    ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
+    if (layer_state_is(LAYER_GAMING) || layer_state_is(LAYER_GAMING_AUX)) {
+        mouse_report.x = 0;
+        mouse_report.y = 0;
+        mouse_report.h = 0;
+        mouse_report.v = 0;
+        return mouse_report;
+    }
     if (abs(mouse_report.x) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD || abs(mouse_report.y) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD) {
         if (auto_pointer_layer_timer == 0) {
             layer_on(LAYER_POINTER);
