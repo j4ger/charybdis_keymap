@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'keyboards/**/keymap.c'
+      - 'qmk.json'
       - '.github/workflows/build-viz.yml'
       - 'scripts/qmk_keymap_viz.py'
   workflow_dispatch:
@@ -30,12 +31,35 @@ jobs:
 
       - name: Generate visualization
         run: |
-          # Find all keymap.c files and generate viz for each
-          find keyboards -name keymap.c | while read f; do
-            dir=$(dirname "$f")
-            name=$(basename "$dir")
-            echo "Processing: $f"
-            python3 scripts/qmk_keymap_viz.py "$f" -o "_site/${name}/index.html" -t "$name"
+          set -euo pipefail
+
+          # Generate viz only for keymaps declared in root qmk.json
+          python3 - <<'PY' | while IFS=$'\t' read -r keymap_path name; do
+          import json
+          import re
+          from pathlib import Path
+
+          with open("qmk.json", "r", encoding="utf-8") as f:
+              qmk_json = f.read()
+          qmk_json = re.sub(r",(\s*[}\\]])", r"\1", qmk_json)
+          targets = json.loads(qmk_json).get("build_targets", [])
+
+          for target in targets:
+              if not isinstance(target, list) or len(target) < 2:
+                  continue
+              keyboard, keymap = target[0], target[1]
+              path = Path("keyboards") / keyboard / "keymaps" / keymap / "keymap.c"
+              slug = f"{keyboard.replace('/', '-')}--{keymap}"
+              print(f"{path}\t{slug}")
+          PY
+            if [ ! -f "$keymap_path" ]; then
+              echo "::error::Keymap file not found: $keymap_path"
+              exit 1
+            fi
+            echo "Processing: $keymap_path"
+            out_path="_site/${name}/index.html"
+            mkdir -p "$(dirname "$out_path")"
+            python3 scripts/qmk_keymap_viz.py "$keymap_path" -o "$out_path" -t "$name"
           done
 
           # Generate index page listing all keymaps
