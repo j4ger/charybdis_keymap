@@ -615,8 +615,8 @@ def detect_keyboard_layout(layers):
     best_score = -1
     for rows in range(2, 6):
         for cols in range(3, 8):
-            for thumb_l in range(0, 6):
-                for thumb_r in range(0, 6):
+            for thumb_r in range(0, 6):
+                for thumb_l in range(0, 6):
                     total = rows * cols * 2 + thumb_l + thumb_r
                     if total == n:
                         score = (1 if rows == 3 else 0) + (1 if cols == 5 else 0) + (1 if thumb_l >= 2 else 0) + (1 if thumb_r >= 2 else 0)
