@@ -21,10 +21,8 @@
 #    define DYNAMIC_KEYMAP_LAYER_COUNT 9
 #endif // VIA_ENABLE
 
-#ifndef __arm__
 /* Disable unused features. */
-#    define NO_ACTION_ONESHOT
-#endif // __arm__
+#define NO_ACTION_ONESHOT
 
 /* Charybdis-specific features. */
 

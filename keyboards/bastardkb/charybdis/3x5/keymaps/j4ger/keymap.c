@@ -58,8 +58,12 @@ static uint16_t auto_pointer_layer_timer = 0;
 #ifndef POINTING_DEVICE_ENABLE
 #    define DRGSCRL KC_NO
 #    define DPI_MOD KC_NO
+#    define DPI_RMOD KC_NO
 #    define S_D_MOD KC_NO
+#    define S_D_RMOD KC_NO
 #    define SNIPING KC_NO
+#    define SNP_TOG KC_NO
+#    define DRG_TOG KC_NO
 #endif // !POINTING_DEVICE_ENABLE
 
 // clang-format off
@@ -88,10 +92,10 @@ static uint16_t auto_pointer_layer_timer = 0;
 /**
  * \brief Function layer.
  *
- * Secondary right-hand layer has function keys mirroring the numerals on the
- * primary layer with extras on the pinkie column, plus system keys on the inner
- * column. App is on the tertiary thumb key and other thumb keys are duplicated
- * from the base layer to enable auto-repeat.
+ * Right-hand layer with F-keys in a row-major block (F1-F9) and
+ * F10-F12 stacked on the outer column. System keys (PSCR, SCRL, PAUS)
+ * sit on the inner column. Only the innermost-left thumb is transparent
+ * (falling through to KC_ENT for auto-repeat); all other thumb keys are dead.
  */
 #define LAYOUT_LAYER_FUNCTION                                                                 \
     _______________DEAD_HALF_ROW_______________, KC_PSCR,   KC_F7,   KC_F8,   KC_F9,  KC_F12, \
@@ -127,9 +131,9 @@ static uint16_t auto_pointer_layer_timer = 0;
  * base layer to avoid having to layer change mid edit and to enable auto-repeat.
  */
 #define LAYOUT_LAYER_NAVIGATION                                                               \
-    _______________DEAD_HALF_ROW_______________, _______________DEAD_HALF_ROW_______________, \
-    ______________HOME_ROW_GACS_L______________, KC_CAPS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, \
-    _______________DEAD_HALF_ROW_______________,  KC_INS, KC_HOME, KC_PGDN, KC_PGUP,  KC_END, \
+    LCTL(KC_Z), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), LCTL(KC_A), _______________DEAD_HALF_ROW_______________, \
+    ______________HOME_ROW_GACS_L______________, KC_CAPS, KC_LEFT,   KC_UP, KC_DOWN, KC_RGHT, \
+    _______________DEAD_HALF_ROW_______________,  KC_INS, KC_HOME, KC_PGUP, KC_PGDN,  KC_END, \
                       XXXXXXX, _______, XXXXXXX,  KC_ENT, KC_BSPC
 
 /**
@@ -140,23 +144,24 @@ static uint16_t auto_pointer_layer_timer = 0;
  * Also provides entry to the gaming layer.
  */
 #define LAYOUT_LAYER_NUMERAL                                                                  \
-    KC_LBRC, KC_BSLS, KC_SCLN,  KC_EQL, KC_RBRC, _______________DEAD_HALF_ROW_______________, \
-    KC_1,       KC_2,    KC_3,    KC_4,    KC_5, ______________HOME_ROW_GACS_R______________, \
-    KC_6,       KC_7,    KC_8,    KC_9,    KC_0, _______________DEAD_HALF_ROW_______________, \
+    KC_RBRC,  KC_EQL, KC_SCLN, KC_BSLS, KC_LBRC, _______________DEAD_HALF_ROW_______________, \
+    KC_5,       KC_4,    KC_3,    KC_2,    KC_1, ______________HOME_ROW_GACS_R______________, \
+    KC_0,       KC_9,    KC_8,    KC_7,    KC_6, _______________DEAD_HALF_ROW_______________, \
              TO(LAYER_GAMING),  KC_GRV, KC_MINS, XXXXXXX, _______
 
 /**
  * \brief Symbols layer.
  *
- * Secondary left-hand layer has shifted symbols in the same locations to reduce
- * chording when using mods with shifted symbols. `KC_LPRN` is duplicated next to
- * `KC_RPRN`.
+ * Secondary left-hand layer is the shift-equivalent of the numeral layer.
+ * Each left-hand key on this layer maps to the shifted version of the
+ * same position on the numeral layer, making symbol locations predictable.
+ * Thumbs mirror: grave becomes tilde, minus becomes underscore.
  */
 #define LAYOUT_LAYER_SYMBOLS                                                                  \
-    KC_LCBR, KC_AMPR, KC_ASTR, KC_LPRN, KC_RCBR, _______________DEAD_HALF_ROW_______________, \
-    KC_COLN,  KC_DLR, KC_PERC, KC_CIRC, KC_PLUS, ______________HOME_ROW_GACS_R______________, \
-    KC_TILD, KC_EXLM,   KC_AT, KC_HASH, KC_PIPE, _______________DEAD_HALF_ROW_______________, \
-                      KC_LPRN, KC_RPRN, KC_UNDS, _______, XXXXXXX
+    KC_RCBR,  KC_PLUS, KC_COLN, KC_PIPE,  KC_LCBR, _______________DEAD_HALF_ROW_______________, \
+    KC_PERC,   KC_DLR, KC_HASH,   KC_AT,  KC_EXLM, ______________HOME_ROW_GACS_R______________, \
+    KC_RPRN,  KC_LPRN, KC_ASTR, KC_AMPR,  KC_CIRC, _______________DEAD_HALF_ROW_______________, \
+                      TO(LAYER_GAMING), KC_TILD, KC_UNDS, _______, XXXXXXX
 
 /**
  * \brief Gaming layer.
@@ -180,7 +185,7 @@ static uint16_t auto_pointer_layer_timer = 0;
     KC_M,    KC_I,    KC_O,    KC_P,  KC_ESC,    KC_PSCR,   KC_F7,   KC_F8,   KC_F9,  KC_F12, \
     KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_SCRL,   KC_F4,   KC_F5,   KC_F6,  KC_F11, \
     KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_PAUS,   KC_F1,   KC_F2,   KC_F3,  KC_F10, \
-                   XXXXXXX, XXXXXXX, _______, XXXXXXX, XXXXXXX
+                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
 
 /**
  * \brief Add Home Row mod to a layout.
@@ -199,7 +204,7 @@ static uint16_t auto_pointer_layer_timer = 0;
              L00,         L01,         L02,         L03,         L04,  \
              R05,         R06,         R07,         R08,         R09,  \
       LGUI_T(L10), LALT_T(L11), LCTL_T(L12), LSFT_T(L13),        L14,  \
-             R15,  RSFT_T(R16), RCTL_T(R17), LALT_T(R18), RGUI_T(R19), \
+             R15,  RSFT_T(R16), RCTL_T(R17), RALT_T(R18), RGUI_T(R19), \
       __VA_ARGS__
 #define HOME_ROW_MOD_GACS(...) _HOME_ROW_MOD_GACS(__VA_ARGS__)
 
@@ -236,8 +241,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [LAYER_FUNCTION] = LAYOUT_wrapper(LAYOUT_LAYER_FUNCTION),
   [LAYER_NAVIGATION] = LAYOUT_wrapper(LAYOUT_LAYER_NAVIGATION),
   [LAYER_MEDIA] = LAYOUT_wrapper(LAYOUT_LAYER_MEDIA),
-  [LAYER_NUMERAL] = LAYOUT_wrapper(LAYOUT_LAYER_NUMERAL),
   [LAYER_POINTER] = LAYOUT_wrapper(LAYOUT_LAYER_POINTER),
+  [LAYER_NUMERAL] = LAYOUT_wrapper(LAYOUT_LAYER_NUMERAL),
   [LAYER_SYMBOLS] = LAYOUT_wrapper(LAYOUT_LAYER_SYMBOLS),
   [LAYER_GAMING] = LAYOUT_wrapper(LAYOUT_LAYER_GAMING),
   [LAYER_GAMING_AUX] = LAYOUT_wrapper(LAYOUT_LAYER_GAMING_AUX),
@@ -248,6 +253,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #    ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     if (layer_state_is(LAYER_GAMING) || layer_state_is(LAYER_GAMING_AUX)) {
+        if (auto_pointer_layer_timer != 0) {
+            auto_pointer_layer_timer = 0;
+            layer_off(LAYER_POINTER);
+#        ifdef RGB_MATRIX_ENABLE
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
+#        endif // RGB_MATRIX_ENABLE
+        }
         mouse_report.x = 0;
         mouse_report.y = 0;
         mouse_report.h = 0;
