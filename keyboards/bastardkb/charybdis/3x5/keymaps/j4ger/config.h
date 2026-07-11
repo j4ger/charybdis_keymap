@@ -38,4 +38,10 @@
 #ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD
 #    define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD 1
 #endif
+
+// Extended timeout — gives time to pause & aim between motion bursts
+// without the layer dropping before a click registers.
+#ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS
+#    define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS 2000
+#endif
 #endif // POINTING_DEVICE_ENABLE

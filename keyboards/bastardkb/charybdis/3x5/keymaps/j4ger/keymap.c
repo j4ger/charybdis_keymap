@@ -117,12 +117,23 @@ static uint16_t auto_pointer_layer_timer = 0;
     XXXXXXX, XXXXXXX, XXXXXXX,  EE_CLR, QK_BOOT, QK_BOOT,  EE_CLR, XXXXXXX, XXXXXXX, XXXXXXX, \
                       _______, KC_MPLY, KC_MSTP, KC_MSTP, KC_MPLY
 
-/** \brief Mouse emulation and pointer functions. */
+/**
+ * \brief Mouse emulation and pointer functions.
+ *
+ * Auto-engages on any trackball motion (threshold=1) and lingers for
+ * CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS. All keys are safe
+ * to press during the linger window — no QK_BOOT or EE_CLR (those live
+ * on the MEDIA layer where activation is deliberate).
+ *
+ * Mirror convention follows the keymap standard:
+ * rows mirror col0↔col9 … col4↔col5;
+ * thumbs mirror pos2↔pos5, pos3↔pos4, with pos1 the lone centre thumb.
+ */
 #define LAYOUT_LAYER_POINTER                                                                  \
-    QK_BOOT,  EE_CLR, XXXXXXX, DPI_MOD, S_D_MOD, S_D_MOD, DPI_MOD, XXXXXXX,  EE_CLR, QK_BOOT, \
-    ______________HOME_ROW_GACS_L______________, ______________HOME_ROW_GACS_R______________, \
-    _______, DRGSCRL, SNIPING, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, SNIPING, DRGSCRL, _______, \
-                      KC_BTN2, KC_BTN1, KC_BTN3, KC_BTN3, KC_BTN1
+    KC_WWW_BACK, KC_WWW_FORWARD, XXXXXXX, DPI_MOD, S_D_MOD, S_D_MOD, DPI_MOD, XXXXXXX, KC_WWW_FORWARD, KC_WWW_BACK, \
+    XXXXXXX,    XXXXXXX,    KC_LCTL, KC_LSFT, XXXXXXX, XXXXXXX, KC_LSFT, KC_LCTL, XXXXXXX,    XXXXXXX,    \
+    _______,    DRGSCRL,    SNIPING, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, SNIPING, DRGSCRL,    _______,    \
+                      KC_BTN3, KC_BTN1, KC_BTN2, KC_BTN2, KC_BTN1
 
 /**
  * \brief Navigation layer.
