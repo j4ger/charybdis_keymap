@@ -27,6 +27,7 @@
 .results { max-width:700px; width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px 18px; text-align:center; }
 .results[hidden] { display:none; }
 .key.next-key { box-shadow:0 0 0 2px var(--accent), 0 0 12px rgba(88,166,255,.5); transform:translateY(-2px) scale(1.04); border-color:var(--accent); background:rgba(88,166,255,.18) !important; z-index:2; }
+.key.next-key.next-target { box-shadow: 0 0 0 2px var(--yellow), 0 0 14px rgba(227,179,65,.55) !important; border-color: var(--yellow) !important; background: rgba(227,179,65,.22) !important; }
 @media(max-width:750px) { .prompt { font-size:1.1rem; } }
 .results h3 { color:var(--accent); margin-bottom:6px; }
 .results p { color:var(--text-dim); margin-bottom:10px; }
@@ -34,3 +35,5 @@
 .results-btn:hover { background:var(--accent); color:#000; }
 .practice-controls label.mode-flag { font-size:0.78rem; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; }
 .practice-controls label.mode-flag input { margin:0; }
+.practice-controls label.drill-toggle { font-size:0.78rem; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; }
+.practice-controls label.drill-toggle input { margin:0; }
