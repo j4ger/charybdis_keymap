@@ -7,7 +7,9 @@ on:
       - 'keyboards/**/keymap.c'
       - 'qmk.json'
       - '.github/workflows/build-viz.yml'
-      - 'scripts/qmk_keymap_viz.py'
+      - 'scripts/**'
+      - 'templates/**'
+      - 'static/**'
   workflow_dispatch:
 
 permissions:
