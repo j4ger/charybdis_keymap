@@ -56,9 +56,11 @@
 .practice-stats b { color:var(--text); font-size:0.95rem; }
 
 .prompt {
-  width:100%; font-size:1.45rem; line-height:2; text-align:center;
-  min-height:2.5em; padding:18px 16px; user-select:none; outline:none;
-  background:var(--bg); border:1px solid var(--border); border-radius:10px;
+  max-width:900px; width:100%; margin:0 auto;
+  font-size:1.4rem; line-height:1.9; text-align:center;
+  min-height:3em; padding:16px 20px;
+  user-select:none; outline:none;
+  overflow-wrap:anywhere; word-break:break-word;
 }
 .prompt .char { color:var(--text-dim); position:relative; padding:1px; }
 .prompt .char.correct { color:var(--text); }

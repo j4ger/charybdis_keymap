@@ -27,7 +27,9 @@ const POS_TO_CODE = (function(){
 
 const WORDLIST = ["the","of","and","to","in","a","is","that","it","for","you","was","with","on","as","have","be","but","not","this","are","from","or","by","an","they","we","his","her","she","him","all","would","there","their","if","about","out","can","who","get","which","when","what","make","will","up","like","them","could","time","no","just","know","take","into","year","your","good","some","see","other","than","then","now","look","only","come","over","think","also","back","after","use","two","how","our","work","first","well","way","even","new","want","because","any","give","day","most","us","been","here","more","very","where","much","should","home","such","great","before","left","right","down","still","life","world","while","never","under","again","between","both","house","each","made","hand","ask","off","place","girl","large","write","need","side","try","kind","head","mother","father","light","country","thing","answer","school","grow","study","learn","point","city","story","sea","earth","music","color","stand","sun","book","eye","king","wood","song","door","road","river","feet","keep","fall","ship","idea","rock","field","grass","rain","snow","tree","hill","fire","night","morning","winter","summer","spring","month","happy","small","young","children","table","water","money","friend","plant","start","smile","sweet","dream","quiet","quick","brown","jump","fox","lazy","dog"];
 
-let practice = { active:false, panelOpen:false, text:'', typed:[], pos:0, startMs:0, correct:0, errors:0, finished:false, emul:true, numbers:false, symbols:false, layerDrill:true, armed:false, armedChord:null };
+const CODE_SNIPPETS = ["let x: i32 = 42;","let mut s = String::new();","fn add(a: i32, b: i32) { a + b }","let nums = vec![1, 2, 3];","for i in 0..3 { sum += i; }","let ok = n == 0;","if !done { break; }","let p = &mut x;","fn main() { run(); }","let k = a & b | c;"];
+
+let practice = { active:false, panelOpen:false, text:'', typed:[], pos:0, startMs:0, correct:0, errors:0, finished:false, emul:true, numbers:false, symbols:false, layerDrill:true, code:false, armed:false, armedChord:null };
 let posToChar = {}, charToPos = {}, charToChord = {};
 let _inHighlight = false;
 
@@ -124,7 +126,13 @@ function fingerName(pk){
   return F[s][col];
 }
 
-function generatePrompt(n, numbers, symbols, layerDrill){
+function generatePrompt(n, numbers, symbols, layerDrill, code){
+  if(code){
+    var count = Math.max(1, Math.round(n/15));
+    var parts = [];
+    for(var j=0;j<count;j++) parts.push(CODE_SNIPPETS[Math.floor(Math.random()*CODE_SNIPPETS.length)]);
+    return parts.join('  ');
+  }
   var SYMS_PASSTHROUGH = ['.', ',', ';', ':', '!', '?'];
   var SYMS_DRILL = Object.keys(charToChord).filter(function(c){
     return charToChord[c].layerName === 'LAYER_SYMBOLS';
@@ -164,7 +172,7 @@ function showActions(mode){
 }
 
 function setControlsDisabled(flag){
-  ['wordCount','emulToggle','numbersToggle','symbolsToggle','layerDrillToggle'].forEach(function(id){
+  ['wordCount','emulToggle','numbersToggle','symbolsToggle','codeToggle','layerDrillToggle'].forEach(function(id){
     var e = document.getElementById(id); if(e) e.disabled = flag;
   });
 }
@@ -175,7 +183,8 @@ function regenPreview(){
   var numbers = document.getElementById('numbersToggle') ? document.getElementById('numbersToggle').checked : false;
   var symbols = document.getElementById('symbolsToggle') ? document.getElementById('symbolsToggle').checked : false;
   var layerDrill = document.getElementById('layerDrillToggle') ? document.getElementById('layerDrillToggle').checked : true;
-  practice.text = generatePrompt(n, numbers, symbols, layerDrill);
+  var code = document.getElementById('codeToggle') ? document.getElementById('codeToggle').checked : false;
+  practice.text = generatePrompt(n, numbers, symbols, layerDrill, code);
   practice.typed = []; practice.pos = 0; practice.startMs = 0;
   practice.correct = 0; practice.errors = 0; practice.finished = false;
   practice.armed = false; practice.armedChord = null;
@@ -237,14 +246,12 @@ function closePractice(){
 }
 
 // config|finished -> running: lock controls, begin capturing
-function startPractice(){
-  var n = parseInt(document.getElementById('wordCount').value, 10) || 25;
-  n = Math.max(5, Math.min(100, n));
+function beginCapture(){
   practice.emul = document.getElementById('emulToggle').checked;
   practice.numbers = document.getElementById('numbersToggle') ? document.getElementById('numbersToggle').checked : false;
   practice.symbols = document.getElementById('symbolsToggle') ? document.getElementById('symbolsToggle').checked : false;
   practice.layerDrill = document.getElementById('layerDrillToggle') ? document.getElementById('layerDrillToggle').checked : true;
-  practice.text = generatePrompt(n, practice.numbers, practice.symbols, practice.layerDrill);
+  practice.code = document.getElementById('codeToggle') ? document.getElementById('codeToggle').checked : false;
   practice.typed = []; practice.pos = 0; practice.startMs = 0;
   practice.correct = 0; practice.errors = 0; practice.finished = false;
   practice.armed = false; practice.armedChord = null;
@@ -260,8 +267,8 @@ function startPractice(){
   document.getElementById('modeToggle').textContent = '✕ Close';
   render(); renderPrompt(); highlightNextKey(); updateStats();
 }
-
-function restart(){ startPractice(); }
+function startPractice(){ beginCapture(); }
+function restart(){ regenPreview(); beginCapture(); }
 
 function renderPrompt(){
   var el = document.getElementById('prompt'); var html = '';
@@ -362,9 +369,16 @@ function handleBackspace(){
 }
 
 function onKeydown(e){
-  if(!practice.active || practice.finished) return;
-  if(e.key === 'Backspace'){ e.preventDefault(); handleBackspace(); return; }
+  if(practice.finished) return;
+  if(e.key === 'Backspace'){ if(practice.active){ e.preventDefault(); handleBackspace(); } return; }
   if(e.ctrlKey || e.metaKey || e.altKey) return;
+  // auto-start from config on the first startable key (keeps the preview text)
+  if(practice.panelOpen && !practice.active){
+    if(e.key === 'Tab') return;
+    startPractice();
+    // fall through to process this key as the first character
+  }
+  if(!practice.active) return;
 
   var target = practice.text[practice.pos].toLowerCase();
 
@@ -430,7 +444,7 @@ document.getElementById('modeToggle').onclick = function(){ if(practice.panelOpe
 document.getElementById('startBtn').onclick = startPractice;
 document.getElementById('restartBtn').onclick = restart;
 document.getElementById('stopBtn').onclick = stopPractice;
-['wordCount','numbersToggle','symbolsToggle','layerDrillToggle'].forEach(function(id){
+['wordCount','numbersToggle','symbolsToggle','codeToggle','layerDrillToggle'].forEach(function(id){
   var el = document.getElementById(id);
   if(el) el.addEventListener('change', function(){ if(practice.panelOpen && !practice.active) regenPreview(); });
 });
