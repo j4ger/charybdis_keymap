@@ -7,7 +7,7 @@ function tabs() {
     const b = document.createElement('button');
     b.className = 'layer-tab' + (i === cur ? ' active' : '');
     b.innerHTML = l.name.replace(/_/g,' ').toUpperCase() + '<span class="idx">[' + l.index + ']</span>';
-    b.onclick = () => { if (typeof practice !== 'undefined' && practice.active) return; cur = i; render(); };
+    b.onclick = () => { if (typeof practice !== 'undefined' && practice.panelOpen) return; cur = i; render(); };
     el.appendChild(b);
   });
 }
@@ -52,7 +52,7 @@ function render() {
   // Click layer triggers
   kb.querySelectorAll('.key.layer-trigger').forEach(el => {
     el.onclick = () => {
-      if (typeof practice !== 'undefined' && practice.active) return;
+      if (typeof practice !== 'undefined' && practice.panelOpen) return;
       const target = el.dataset.layer;
       if (!target) return;
       const idx = LAYERS.findIndex(l => l.name === target);

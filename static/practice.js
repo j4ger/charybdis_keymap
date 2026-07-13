@@ -1,4 +1,3 @@
-
 const KC_CHAR = {
   KC_A:'a',KC_B:'b',KC_C:'c',KC_D:'d',KC_E:'e',KC_F:'f',KC_G:'g',KC_H:'h',
   KC_I:'i',KC_J:'j',KC_K:'k',KC_L:'l',KC_M:'m',KC_N:'n',KC_O:'o',KC_P:'p',
@@ -28,7 +27,7 @@ const POS_TO_CODE = (function(){
 
 const WORDLIST = ["the","of","and","to","in","a","is","that","it","for","you","was","with","on","as","have","be","but","not","this","are","from","or","by","an","they","we","his","her","she","him","all","would","there","their","if","about","out","can","who","get","which","when","what","make","will","up","like","them","could","time","no","just","know","take","into","year","your","good","some","see","other","than","then","now","look","only","come","over","think","also","back","after","use","two","how","our","work","first","well","way","even","new","want","because","any","give","day","most","us","been","here","more","very","where","much","should","home","such","great","before","left","right","down","still","life","world","while","never","under","again","between","both","house","each","made","hand","ask","off","place","girl","large","write","need","side","try","kind","head","mother","father","light","country","thing","answer","school","grow","study","learn","point","city","story","sea","earth","music","color","stand","sun","book","eye","king","wood","song","door","road","river","feet","keep","fall","ship","idea","rock","field","grass","rain","snow","tree","hill","fire","night","morning","winter","summer","spring","month","happy","small","young","children","table","water","money","friend","plant","start","smile","sweet","dream","quiet","quick","brown","jump","fox","lazy","dog"];
 
-let practice = { active:false, text:'', typed:[], pos:0, startMs:0, correct:0, errors:0, finished:false, emul:true, numbers:false, symbols:false, layerDrill:true, armed:false, armedChord:null };
+let practice = { active:false, panelOpen:false, text:'', typed:[], pos:0, startMs:0, correct:0, errors:0, finished:false, emul:true, numbers:false, symbols:false, layerDrill:true, armed:false, armedChord:null };
 let posToChar = {}, charToPos = {}, charToChord = {};
 let _inHighlight = false;
 
@@ -70,7 +69,6 @@ function buildPosIndex(){
 function buildChordIndex(){
   charToChord = {};
   var triggerMap = {};
-  // Find layer-trigger thumbs on the base layer
   var base = LAYERS[0];
   ['left','right'].forEach(function(side){
     var sd = side === 'left' ? 'L' : 'R';
@@ -82,7 +80,6 @@ function buildChordIndex(){
       }
     });
   });
-  // Walk numeral/symbols layers and record chord targets
   LAYERS.forEach(function(l){
     if(l.name !== 'LAYER_NUMERAL' && l.name !== 'LAYER_SYMBOLS') return;
     var trig = triggerMap[l.name];
@@ -157,6 +154,89 @@ function clearNextKey(){
   document.querySelectorAll('.key.next-key').forEach(function(e){ e.classList.remove('next-key'); });
 }
 
+function showActions(mode){
+  var s = document.getElementById('startBtn');
+  var r = document.getElementById('restartBtn');
+  var p = document.getElementById('stopBtn');
+  if(s) s.style.display = (mode === 'config') ? '' : 'none';
+  if(r) r.style.display = (mode === 'running') ? '' : 'none';
+  if(p) p.style.display = (mode === 'running') ? '' : 'none';
+}
+
+function setControlsDisabled(flag){
+  ['wordCount','emulToggle','numbersToggle','symbolsToggle','layerDrillToggle'].forEach(function(id){
+    var e = document.getElementById(id); if(e) e.disabled = flag;
+  });
+}
+
+function regenPreview(){
+  var n = parseInt(document.getElementById('wordCount').value, 10) || 25;
+  n = Math.max(5, Math.min(100, n));
+  var numbers = document.getElementById('numbersToggle') ? document.getElementById('numbersToggle').checked : false;
+  var symbols = document.getElementById('symbolsToggle') ? document.getElementById('symbolsToggle').checked : false;
+  var layerDrill = document.getElementById('layerDrillToggle') ? document.getElementById('layerDrillToggle').checked : true;
+  practice.text = generatePrompt(n, numbers, symbols, layerDrill);
+  practice.typed = []; practice.pos = 0; practice.startMs = 0;
+  practice.correct = 0; practice.errors = 0; practice.finished = false;
+  practice.armed = false; practice.armedChord = null;
+  renderPrompt(); updateStats();
+}
+
+function hideVisualizer(){
+  ['search','tabs'].forEach(function(id){ var e = document.getElementById(id); if(e) e.style.display = 'none'; });
+  document.querySelectorAll('.legend, #info').forEach(function(e){ e.style.display = 'none'; });
+}
+
+function showVisualizer(){
+  ['search','tabs'].forEach(function(id){ var e = document.getElementById(id); if(e) e.style.display = ''; });
+  document.querySelectorAll('.legend, #info').forEach(function(e){ e.style.display = ''; });
+}
+
+// closed -> config: open the panel, controls enabled, show a preview prompt
+function openPractice(){
+  practice.panelOpen = true; practice.active = false; practice.finished = false;
+  practice.armed = false; practice.armedChord = null; cur = 0;
+  hideVisualizer();
+  var panel = document.getElementById('practicePanel'); if(panel) panel.hidden = false;
+  var res = document.getElementById('results'); if(res) res.hidden = true;
+  setControlsDisabled(false);
+  showActions('config');
+  document.getElementById('modeToggle').textContent = '✕ Close';
+  regenPreview();
+  render();
+  document.getElementById('fingerHint').textContent = 'Configure options, then press ▶ Start';
+}
+
+// running -> config: stop the test, re-enable controls, new preview
+function stopPractice(){
+  practice.active = false; practice.finished = false;
+  practice.armed = false; practice.armedChord = null;
+  setControlsDisabled(false);
+  var res = document.getElementById('results'); if(res) res.hidden = true;
+  showActions('config');
+  clearNextKey();
+  regenPreview();
+  render();
+  document.getElementById('fingerHint').textContent = 'Configure options, then press ▶ Start';
+}
+
+// config|running -> closed: hide panel, restore visualizer
+function closePractice(){
+  practice.panelOpen = false; practice.active = false; practice.finished = false;
+  practice.armed = false; practice.armedChord = null;
+  setControlsDisabled(false);
+  showVisualizer();
+  var panel = document.getElementById('practicePanel'); if(panel) panel.hidden = true;
+  var res = document.getElementById('results'); if(res) res.hidden = true;
+  clearNextKey();
+  showActions('config');
+  document.getElementById('modeToggle').textContent = '▶ Practice';
+  document.getElementById('fingerHint').textContent = 'Press ▶ Practice to begin…';
+  cur = 0;
+  render();
+}
+
+// config|finished -> running: lock controls, begin capturing
 function startPractice(){
   var n = parseInt(document.getElementById('wordCount').value, 10) || 25;
   n = Math.max(5, Math.min(100, n));
@@ -167,41 +247,21 @@ function startPractice(){
   practice.text = generatePrompt(n, practice.numbers, practice.symbols, practice.layerDrill);
   practice.typed = []; practice.pos = 0; practice.startMs = 0;
   practice.correct = 0; practice.errors = 0; practice.finished = false;
-  practice.active = true; cur = 0;
-  ['search','tabs'].forEach(function(id){ var e = document.getElementById(id); if(e) e.style.display = 'none'; });
-  document.querySelectorAll('.legend, #info').forEach(function(e){ e.style.display = 'none'; });
+  practice.armed = false; practice.armedChord = null;
+  practice.active = true; practice.panelOpen = true; cur = 0;
+  hideVisualizer();
   var panel = document.getElementById('practicePanel'); if(panel) panel.hidden = false;
   var res = document.getElementById('results'); if(res) res.hidden = true;
-  var s = document.getElementById('search'); if(s){ s.value=''; s.blur(); }
+  setControlsDisabled(true);
+  var s = document.getElementById('search'); if(s){ s.value = ''; s.blur(); }
   term = '';
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
-  var wc = document.getElementById('wordCount'); if(wc) wc.disabled = true;
-  var et = document.getElementById('emulToggle'); if(et) et.disabled = true;
-  var nt = document.getElementById('numbersToggle'); if(nt) nt.disabled = true;
-  var st = document.getElementById('symbolsToggle'); if(st) st.disabled = true;
-  var ld = document.getElementById('layerDrillToggle'); if(ld) ld.disabled = true;
-  document.getElementById('modeToggle').textContent = '✕ Exit Practice';
+  showActions('running');
+  document.getElementById('modeToggle').textContent = '✕ Close';
   render(); renderPrompt(); highlightNextKey(); updateStats();
 }
 
 function restart(){ startPractice(); }
-
-function exitPractice(){
-  practice.active = false;
-  ['search','tabs'].forEach(function(id){ var e = document.getElementById(id); if(e) e.style.display = ''; });
-  var wc = document.getElementById('wordCount'); if(wc) wc.disabled = false;
-  var et = document.getElementById('emulToggle'); if(et) et.disabled = false;
-  var nt = document.getElementById('numbersToggle'); if(nt) nt.disabled = false;
-  var st = document.getElementById('symbolsToggle'); if(st) st.disabled = false;
-  var ld = document.getElementById('layerDrillToggle'); if(ld) ld.disabled = false;
-  document.querySelectorAll('.legend, #info').forEach(function(e){ e.style.display = ''; });
-  var panel = document.getElementById('practicePanel'); if(panel) panel.hidden = true;
-  clearNextKey();
-  document.getElementById('modeToggle').textContent = '▶ Practice';
-  document.getElementById('fingerHint').textContent = 'Press ▶ Practice to begin…';
-  cur = 0;
-  render();
-}
 
 function renderPrompt(){
   var el = document.getElementById('prompt'); var html = '';
@@ -209,7 +269,7 @@ function renderPrompt(){
     var ch = practice.text[i];
     var cls = 'char';
     if(i < practice.pos){ cls += practice.typed[i].ok ? ' correct' : ' incorrect'; }
-    else if(i === practice.pos && !practice.finished){ cls += ' current'; }
+    else if(i === practice.pos && !practice.finished && practice.active){ cls += ' current'; }
     var esc = ch === ' ' ? '&nbsp;' : ch.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     html += '<span class="' + cls + '">' + esc + '</span>';
   }
@@ -218,6 +278,7 @@ function renderPrompt(){
 
 function highlightNextKey(){
   if(_inHighlight) return;
+  if(!practice.active) { clearNextKey(); return; }
   _inHighlight = true;
   try {
     clearNextKey();
@@ -231,7 +292,6 @@ function highlightNextKey(){
     if(cur !== wantLayer){
       cur = wantLayer;
       render();
-      // fall through to apply highlights on the now-current layer
     }
     if(isChord){
       var chord = charToChord[c];
@@ -308,20 +368,17 @@ function onKeydown(e){
 
   var target = practice.text[practice.pos].toLowerCase();
 
-  // ── Chord path (layer drill ON and target is a chord char) ──
   if(practice.layerDrill && !(target in charToPos) && target in charToChord){
     var chord = charToChord[target];
     e.preventDefault();
     if(!practice.startMs) practice.startMs = Date.now();
 
     if(!practice.armed){
-      // IDLE: waiting for the layer-trigger thumb
       if(e.code === chord.triggerPhysicalCode){
         practice.armed = true;
         practice.armedChord = chord;
-        highlightNextKey();   // re-highlight: target now gets .next-target
+        highlightNextKey();
       } else {
-        // Wrong key while trigger expected → incorrect, advance
         practice.typed.push({ ch: (e.key && e.key.length === 1) ? e.key : e.code, ok: false });
         practice.errors++;
         practice.pos++;
@@ -329,7 +386,6 @@ function onKeydown(e){
         if(practice.pos >= practice.text.length) finishTest();
       }
     } else {
-      // ARMED: waiting for the target key
       var targetCode = POS_TO_CODE[chord.targetPos];
       if(e.code === targetCode){
         practice.typed.push({ ch: target, ok: true });
@@ -347,10 +403,8 @@ function onKeydown(e){
     return;
   }
 
-  // ── Global Tab guard (non-chord Tab) ──
   if(e.key === 'Tab'){ e.preventDefault(); return; }
 
-  // ── Base / passthrough path (approach A, unchanged) ──
   var pk = CODE_TO_POS[e.code];
   var ch = null;
   var onBase = (target in charToPos);
@@ -372,8 +426,13 @@ function onKeydown(e){
 
 buildPosIndex();
 buildChordIndex();
-document.getElementById('modeToggle').onclick = function(){ if(practice.active) exitPractice(); else startPractice(); };
+document.getElementById('modeToggle').onclick = function(){ if(practice.panelOpen) closePractice(); else openPractice(); };
+document.getElementById('startBtn').onclick = startPractice;
 document.getElementById('restartBtn').onclick = restart;
-document.getElementById('exitBtn').onclick = exitPractice;
+document.getElementById('stopBtn').onclick = stopPractice;
+['wordCount','numbersToggle','symbolsToggle','layerDrillToggle'].forEach(function(id){
+  var el = document.getElementById(id);
+  if(el) el.addEventListener('change', function(){ if(practice.panelOpen && !practice.active) regenPreview(); });
+});
 document.addEventListener('keydown', onKeydown);
 window.addEventListener('paste', function(e){ if(practice.active) e.preventDefault(); });

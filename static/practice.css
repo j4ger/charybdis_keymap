@@ -1,39 +1,87 @@
-
+/* ── Practice mode ── */
 .mode-toggle {
-  display:inline-block; padding:8px 20px;
-  border:1px solid var(--accent); border-radius:20px;
+  display:inline-block; padding:8px 22px;
+  border:1px solid var(--accent); border-radius:999px;
   background:transparent; color:var(--accent);
-  font-family:inherit; font-size:0.85rem;
-  cursor:pointer; transition:all .15s; margin-bottom:16px;
+  font-family:inherit; font-size:0.85rem; font-weight:600;
+  cursor:pointer; transition:all .15s; margin-bottom:18px;
 }
 .mode-toggle:hover { background:var(--accent); color:#000; }
-.practice-panel { width:100%; max-width:900px; display:flex; flex-direction:column; align-items:center; gap:12px; margin-bottom:20px; }
+
+.practice-panel {
+  width:100%; max-width:920px; margin:0 auto 24px;
+  background:var(--surface); border:1px solid var(--border); border-radius:14px;
+  padding:20px 24px; display:flex; flex-direction:column; gap:16px;
+}
 .practice-panel[hidden] { display:none; }
-.practice-controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; justify-content:center; font-size:0.85rem; }
-.practice-controls input[type="number"] { width:60px; padding:4px 8px; border:1px solid var(--border); border-radius:4px; background:var(--surface); color:var(--text); font-family:inherit; font-size:0.8rem; }
-.practice-controls button { padding:4px 12px; border:1px solid var(--border); border-radius:4px; background:var(--surface); color:var(--text); font-family:inherit; font-size:0.78rem; cursor:pointer; }
+
+.practice-controls {
+  display:flex; flex-wrap:wrap; gap:14px; align-items:center; justify-content:space-between;
+}
+.control-group { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.control-actions { display:flex; gap:8px; align-items:center; }
+
+.practice-controls label.word-label {
+  display:inline-flex; align-items:center; gap:6px; font-size:0.8rem; color:var(--text-dim);
+}
+.practice-controls input[type="number"] {
+  width:56px; padding:4px 8px; border:1px solid var(--border); border-radius:6px;
+  background:var(--bg); color:var(--text); font-family:inherit; font-size:0.8rem;
+}
+
+.practice-controls label.mode-flag {
+  display:inline-flex; align-items:center; gap:6px; padding:5px 12px;
+  border:1px solid var(--border); border-radius:999px;
+  font-size:0.78rem; color:var(--text-dim); cursor:pointer; user-select:none;
+  transition:all .15s;
+}
+.practice-controls label.mode-flag:hover { border-color:var(--accent); color:var(--text); }
+.practice-controls label.mode-flag input { margin:0; accent-color:var(--accent); cursor:pointer; }
+
+.practice-controls button {
+  padding:6px 14px; border:1px solid var(--border); border-radius:6px;
+  background:var(--bg); color:var(--text); font-family:inherit; font-size:0.8rem;
+  cursor:pointer; transition:all .15s;
+}
 .practice-controls button:hover { border-color:var(--accent); }
-.practice-controls label { font-size:0.78rem; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; }
-.practice-stats { display:flex; gap:20px; font-size:0.85rem; color:var(--text-dim); }
-.practice-stats b { color:var(--text); }
-.prompt { max-width:900px; width:100%; font-size:1.4rem; font-family:inherit; text-align:center; min-height:3em; padding:16px 20px; user-select:none; outline:none; line-height:1.8; }
+#startBtn { border-color:var(--accent); color:var(--accent); font-weight:600; }
+#startBtn:hover { background:var(--accent); color:#000; }
+#stopBtn:hover { border-color:var(--red); color:var(--red); }
+
+.practice-stats { display:flex; gap:10px; justify-content:center; }
+.practice-stats span {
+  background:var(--bg); border:1px solid var(--border); border-radius:8px;
+  padding:6px 14px; font-size:0.78rem; color:var(--text-dim);
+}
+.practice-stats b { color:var(--text); font-size:0.95rem; }
+
+.prompt {
+  width:100%; font-size:1.45rem; line-height:2; text-align:center;
+  min-height:2.5em; padding:18px 16px; user-select:none; outline:none;
+  background:var(--bg); border:1px solid var(--border); border-radius:10px;
+}
 .prompt .char { color:var(--text-dim); position:relative; padding:1px; }
 .prompt .char.correct { color:var(--text); }
 .prompt .char.incorrect { color:var(--red); text-decoration:underline wavy var(--red); }
 .prompt .char.current { color:var(--accent); background:rgba(88,166,255,.12); border-radius:3px; }
 @keyframes caretBlink { 0%,50%{border-left:2px solid var(--accent)} 50.01%,100%{border-left:2px solid transparent} }
 .prompt .char.current::before { content:''; position:absolute; left:-2px; top:0; bottom:0; border-left:2px solid var(--accent); animation:caretBlink 1s step-end infinite; }
-.finger-hint { font-size:0.8rem; color:var(--text-dim); min-height:1.2em; text-align:center; }
-.results { max-width:700px; width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px 18px; text-align:center; }
+
+.finger-hint { text-align:center; font-size:0.85rem; color:var(--text-dim); min-height:1.3em; }
+
+.results { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:16px 18px; text-align:center; }
 .results[hidden] { display:none; }
-.key.next-key { box-shadow:0 0 0 2px var(--accent), 0 0 12px rgba(88,166,255,.5); transform:translateY(-2px) scale(1.04); border-color:var(--accent); background:rgba(88,166,255,.18) !important; z-index:2; }
-.key.next-key.next-target { box-shadow: 0 0 0 2px var(--yellow), 0 0 14px rgba(227,179,65,.55) !important; border-color: var(--yellow) !important; background: rgba(227,179,65,.22) !important; }
-@media(max-width:750px) { .prompt { font-size:1.1rem; } }
 .results h3 { color:var(--accent); margin-bottom:6px; }
-.results p { color:var(--text-dim); margin-bottom:10px; }
+.results p { color:var(--text-dim); margin-bottom:12px; }
 .results-btn { padding:6px 16px; border:1px solid var(--accent); border-radius:6px; background:transparent; color:var(--accent); font-family:inherit; font-size:0.8rem; cursor:pointer; }
 .results-btn:hover { background:var(--accent); color:#000; }
-.practice-controls label.mode-flag { font-size:0.78rem; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; }
-.practice-controls label.mode-flag input { margin:0; }
-.practice-controls label.drill-toggle { font-size:0.78rem; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; }
-.practice-controls label.drill-toggle input { margin:0; }
+
+/* chord highlight on the on-screen keyboard */
+.key.next-key { box-shadow:0 0 0 2px var(--accent), 0 0 12px rgba(88,166,255,.5); transform:translateY(-2px) scale(1.04); border-color:var(--accent); background:rgba(88,166,255,.18) !important; z-index:2; }
+.key.next-key.next-target { box-shadow:0 0 0 2px var(--yellow), 0 0 14px rgba(227,179,65,.55) !important; border-color:var(--yellow) !important; background:rgba(227,179,65,.22) !important; }
+
+@media(max-width:750px) {
+  .prompt { font-size:1.15rem; }
+  .practice-controls { justify-content:center; }
+  .practice-panel { padding:16px; }
+}

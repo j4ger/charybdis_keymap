@@ -66,7 +66,7 @@ def test_html_markers():
     data = parse_keymap(_REAL_KEYMAP)
     html = generate_html(data, 't')
 
-    markers = ['id="practicePanel"', 'CODE_TO_POS', 'const LAYERS', 'data-pos', 'id="numbersToggle"', 'id="symbolsToggle"', 'generatePrompt', 'id="layerDrillToggle"', 'charToChord', 'buildChordIndex']
+    markers = ['id="practicePanel"', 'CODE_TO_POS', 'const LAYERS', 'data-pos', 'id="numbersToggle"', 'id="symbolsToggle"', 'generatePrompt', 'id="layerDrillToggle"', 'charToChord', 'buildChordIndex', 'id="startBtn"', 'id="stopBtn"']
     for marker in markers:
         assert marker in html, f"expected marker {marker!r} not found in generated HTML"
 
