@@ -131,9 +131,9 @@ static uint16_t auto_pointer_layer_timer = 0;
  */
 #define LAYOUT_LAYER_POINTER                                                                  \
     KC_WWW_BACK, KC_WWW_FORWARD, XXXXXXX, DPI_MOD, S_D_MOD, S_D_MOD, DPI_MOD, XXXXXXX, KC_WWW_FORWARD, KC_WWW_BACK, \
-    XXXXXXX,    XXXXXXX,    KC_LCTL, KC_LSFT, XXXXXXX, XXXXXXX, KC_LSFT, KC_LCTL, XXXXXXX,    XXXXXXX,    \
+    KC_LGUI,    KC_LALT,    KC_LCTL, KC_LSFT, XXXXXXX, XXXXXXX, KC_BTN1, KC_BTN2, KC_BTN3,    XXXXXXX,    \
     _______,    DRGSCRL,    SNIPING, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, SNIPING, DRGSCRL,    _______,    \
-                      KC_BTN3, KC_BTN1, KC_BTN2, KC_BTN2, KC_BTN1
+                      KC_BTN3, KC_BTN1, KC_BTN2, KC_WWW_BACK, KC_WWW_FORWARD
 
 /**
  * \brief Navigation layer.
