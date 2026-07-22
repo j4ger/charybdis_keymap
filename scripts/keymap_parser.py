@@ -65,6 +65,11 @@ KC_MAP = {
     'KC_WH_U': 'Wheel↑', 'KC_WH_D': 'Wheel↓', 'KC_WH_L': 'Wheel←',
     'KC_WH_R': 'Wheel→', 'KC_ACL0': 'Accel0', 'KC_ACL1': 'Accel1',
     'KC_ACL2': 'Accel2',
+    # Web / WWW
+    'KC_WWW_BACK': 'Web←', 'KC_WWW_FORWARD': 'Web→',
+    'KC_WWW_REFRESH': 'Web⟳', 'KC_WWW_HOME': 'Web⌂',
+    'KC_WWW_SEARCH': 'Web?', 'KC_WWW_STOP': 'Web✕',
+    'KC_WWW_FAVORITES': 'Web★', 'KC_WWW_MAIL': 'Mail',
     # QMK special
     'KC_TRNS': '▽', 'KC_TRANSPARENT': '▽',
     'XXXXXXX': '×', 'KC_NO': '×',
@@ -73,8 +78,11 @@ KC_MAP = {
     'RGB_TOG': 'RGB', 'RGB_MOD': 'RGB→', 'RGB_RMOD': 'RGB←',
     'RGB_HUI': 'Hue+', 'RGB_HUD': 'Hue-', 'RGB_SAI': 'Sat+',
     'RGB_SAD': 'Sat-', 'RGB_VAI': 'Bri+', 'RGB_VAD': 'Bri-',
-    'SNIPING': 'Snipe', 'DRGSCRL': 'DragScrl', 'DRAGSCROLL': 'DragScrl',
-    'DPI_MOD': 'DPI+', 'S_D_MOD': 'SnpDPI+',
+    # Charybdis pointer
+    'SNIPING': 'Snipe', 'SNP_TOG': 'SnipeTgl',
+    'DRGSCRL': 'DragScrl', 'DRAGSCROLL': 'DragScrl', 'DRG_TOG': 'DragTgl',
+    'DPI_MOD': 'DPI+', 'DPI_RMOD': 'DPI−',
+    'S_D_MOD': 'SnpDPI+', 'S_D_RMOD': 'SnpDPI−',
 }
 
 # Key type classification for coloring
@@ -104,8 +112,15 @@ KEY_TYPE_MAP = {
     'KC_BTN4': 'mouse', 'KC_BTN5': 'mouse', 'KC_MS_U': 'mouse',
     'KC_MS_D': 'mouse', 'KC_MS_L': 'mouse', 'KC_MS_R': 'mouse',
     'KC_WH_U': 'mouse', 'KC_WH_D': 'mouse', 'KC_WH_L': 'mouse',
-    'KC_WH_R': 'mouse', 'SNIPING': 'mouse', 'DRGSCRL': 'mouse',
-    'DRAGSCROLL': 'mouse', 'DPI_MOD': 'mouse', 'S_D_MOD': 'mouse',
+    'KC_WH_R': 'mouse', 'SNIPING': 'mouse', 'SNP_TOG': 'mouse',
+    'DRGSCRL': 'mouse', 'DRAGSCROLL': 'mouse', 'DRG_TOG': 'mouse',
+    'DPI_MOD': 'mouse', 'DPI_RMOD': 'mouse', 'S_D_MOD': 'mouse',
+    'S_D_RMOD': 'mouse',
+    # Web
+    'KC_WWW_BACK': 'nav', 'KC_WWW_FORWARD': 'nav',
+    'KC_WWW_REFRESH': 'nav', 'KC_WWW_HOME': 'nav',
+    'KC_WWW_SEARCH': 'nav', 'KC_WWW_STOP': 'nav',
+    'KC_WWW_FAVORITES': 'nav', 'KC_WWW_MAIL': 'nav',
     # Special
     'KC_TRNS': 'dead', 'KC_TRANSPARENT': 'dead', 'XXXXXXX': 'dead', 'KC_NO': 'dead',
     'QK_BOOT': 'media', 'QK_REBOOT': 'media', 'EE_CLR': 'media', 'EEP_RST': 'media',
@@ -270,11 +285,16 @@ class Preprocessor:
 # ─── Parser ──────────────────────────────────────────────────────────────
 
 def preprocess_file(text):
-    """Remove comments and join line continuations."""
+    """Remove comments, strip conditional fallback blocks, join line continuations."""
     # Remove // comments
     text = re.sub(r'//[^\n]*', '', text)
     # Remove /* */ comments
     text = re.sub(r'/\*.*?\*/', '', text, flags=re.DOTALL)
+    # Remove #ifndef POINTING_DEVICE_ENABLE fallback blocks (Charybdis always has one)
+    text = re.sub(
+        r'#\s*ifndef\s+POINTING_DEVICE_ENABLE.*?#\s*endif[^\n]*',
+        '', text, flags=re.DOTALL
+    )
     # Join line continuations
     text = re.sub(r'\\\n', '', text)
     return text
@@ -585,6 +605,19 @@ def classify_key(keycode):
             'LOPT': '⌥', 'ROPT': '⌥', 'LCMD': '⌘', 'RCMD': '⌘',
         }.get(mod_name, mod_name)
         return (inner_label, f'{mod_symbol} {mod_name}', 'mod', None)
+
+    # Modifier combos: LCTL(kc), LSFT(kc), LALT(kc), LGUI(kc), RCTL(kc), etc.
+    mod_combo_match = re.match(r'(LCTL|LSFT|LALT|LGUI|RCTL|RSFT|RALT|RGUI|LCMD|RCMD|LOPT|ROPT)\s*\(\s*(\w+)\s*\)', keycode)
+    if mod_combo_match:
+        mod = mod_combo_match.group(1)
+        inner = mod_combo_match.group(2)
+        inner_label = KC_MAP.get(inner, inner.replace('KC_', ''))
+        mod_symbol = {
+            'LCTL': '⌃', 'RCTL': '⌃', 'LSFT': '⇧', 'RSFT': '⇧',
+            'LALT': '⌥', 'RALT': '⌥', 'LGUI': '⌘', 'RGUI': '⌘',
+            'LCMD': '⌘', 'RCMD': '⌘', 'LOPT': '⌥', 'ROPT': '⌥',
+        }.get(mod, mod)
+        return (inner_label, f'{mod_symbol} {mod}', 'mod', None)
 
     # Standard KC code
     if keycode in KC_MAP:

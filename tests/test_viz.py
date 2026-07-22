@@ -32,7 +32,7 @@ def test_parse_keymap():
     assert data['thumbs'] == 3, f"thumbs: expected 3, got {data['thumbs']}"
 
     layers = data['layers']
-    assert len(layers) == 9, f"layers count: expected 9, got {len(layers)}"
+    assert len(layers) == 8, f"layers count: expected 8, got {len(layers)}"
 
     # Base layer (index 0) key counts
     base = layers[0]
@@ -52,8 +52,8 @@ def test_parse_keymap():
 
     # Thumb label assertions
     left_thumb_labels = [k['label'] for k in left_thumbs]
-    assert left_thumb_labels == ['Bksp', 'Space', 'Enter'], (
-        f"left thumb labels: expected ['Bksp','Space','Enter'], got {left_thumb_labels}"
+    assert left_thumb_labels == ['TG', 'Space', 'Bksp'], (
+        f"left thumb labels: expected ['TG','Space','Bksp'], got {left_thumb_labels}"
     )
 
     right_thumb_labels = [k['label'] for k in right_thumbs]
