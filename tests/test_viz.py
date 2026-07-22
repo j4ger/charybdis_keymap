@@ -52,8 +52,8 @@ def test_parse_keymap():
 
     # Thumb label assertions
     left_thumb_labels = [k['label'] for k in left_thumbs]
-    assert left_thumb_labels == ['TG', 'Space', 'Bksp'], (
-        f"left thumb labels: expected ['TG','Space','Bksp'], got {left_thumb_labels}"
+    assert left_thumb_labels == ['Bksp', 'Space', 'Bksp'], (
+        f"left thumb labels: expected ['Bksp','Space','Bksp'], got {left_thumb_labels}"
     )
 
     right_thumb_labels = [k['label'] for k in right_thumbs]

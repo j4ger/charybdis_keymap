@@ -27,9 +27,9 @@ enum charybdis_keymap_layers {
     LAYER_GAMING_AUX,
 };
 
-#define BSP_PTR TG(LAYER_POINTER)
 #define SPC_NAV LT(LAYER_NAVIGATION, KC_SPC)
 #define FUN_BSPC LT(LAYER_FUNCTION, KC_BSPC)
+#define PTR_TG TG(LAYER_POINTER)
 #define ESC_SYM LT(LAYER_SYMBOLS, KC_ESC)
 #define TAB_NUM LT(LAYER_NUMERAL, KC_TAB)
 #define ESC_AUX LT(LAYER_GAMING_AUX, KC_ESC)
@@ -51,7 +51,7 @@ enum charybdis_keymap_layers {
        KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,    KC_J,    KC_L,    KC_U,    KC_Y, KC_QUOT, \
        KC_A,    KC_R,    KC_S,    KC_T,    KC_D,    KC_H,    KC_N,    KC_E,    KC_I, KC_O,    \
        KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, \
-                      BSP_PTR, SPC_NAV, FUN_BSPC, ESC_SYM, TAB_NUM
+                      KC_BSPC, SPC_NAV, FUN_BSPC, ESC_SYM, TAB_NUM
 
 /** Convenience row shorthands. */
 #define _______________DEAD_HALF_ROW_______________ XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
@@ -79,14 +79,17 @@ enum charybdis_keymap_layers {
     _______________DEAD_HALF_ROW_______________, XXXXXXX,   KC_F7,   KC_F8,   KC_F9,  KC_F12, \
     KC_MPRV, KC_VOLD, KC_MUTE, KC_VOLU, KC_MNXT, XXXXXXX,   KC_F4,   KC_F5,   KC_F6,  KC_F11, \
     XXXXXXX, XXXXXXX,  EE_CLR, QK_BOOT, XXXXXXX, XXXXXXX,   KC_F1,   KC_F2,   KC_F3,  KC_F10, \
-                      XXXXXXX, XXXXXXX, KC_MPLY, XXXXXXX, XXXXXXX
+                      KC_BSPC, _______, _______, KC_MPLY, PTR_TG
 
 /**
  * \brief Mouse emulation and pointer functions.
  *
- * Entered via TG(LAYER_POINTER) on left-outer thumb; same key exits.
- * Trackball sits at the rightmost thumb position — right hand operates
- * the ball, left hand handles buttons/modifiers.
+ * Physical thumb layout: 3 keys on the left half, 2 on the right half,
+ * with the trackball at the rightmost right-half position (replacing a
+ * key).  The right thumb operates the trackball, so all mouse buttons
+ * live on the free left thumb.  Thumb order on the right half is
+ * inner→outer→trackball, so PTR_TG sits on the outer key (closest to
+ * the ball) for both entry (function layer) and exit (this layer).
  *
  * Left hand: mouse buttons (home row), DPI/scroll/snipe (bottom row).
  * Right hand: GACS modifiers (home row), scroll/DPI (bottom row),
@@ -96,7 +99,7 @@ enum charybdis_keymap_layers {
     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_WWW_BACK, KC_WWW_FORWARD, XXXXXXX, XXXXXXX, XXXXXXX, \
     XXXXXXX, KC_BTN3, KC_BTN2, KC_BTN1, XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX, \
     DPI_MOD, S_D_MOD, DRGSCRL, SNIPING, SNP_TOG, XXXXXXX, DRGSCRL, S_D_MOD, DPI_MOD, XXXXXXX, \
-                      TG(LAYER_POINTER), KC_BTN1, KC_BTN2, KC_BTN3, XXXXXXX
+                      KC_BTN1, KC_BTN2, KC_BTN3, KC_BSPC, PTR_TG
 
 /**
  * \brief Navigation layer.
