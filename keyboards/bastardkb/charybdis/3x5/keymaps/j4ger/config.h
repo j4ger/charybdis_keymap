@@ -17,31 +17,7 @@
 #pragma once
 
 #ifdef VIA_ENABLE
-/* VIA configuration. */
-#    define DYNAMIC_KEYMAP_LAYER_COUNT 9
+#    define DYNAMIC_KEYMAP_LAYER_COUNT 8
 #endif // VIA_ENABLE
 
-/* Disable unused features. */
 #define NO_ACTION_ONESHOT
-
-/* Charybdis-specific features. */
-
-#ifdef POINTING_DEVICE_ENABLE
-// Automatically enable the pointer layer when moving the trackball.  See also:
-// - `CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS`
-// - `CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD`
-#define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-
-// Lowered threshold — at 400 CPI and 1ms throttle, normal rolling produces
-// ~0.4 counts per sample per in/s. Threshold of 8 was unreachable; 1 means
-// any deliberate movement triggers the layer.
-#ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD
-#    define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD 1
-#endif
-
-// Extended timeout — gives time to pause & aim between motion bursts
-// without the layer dropping before a click registers.
-#ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS
-#    define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS 1000
-#endif
-#endif // POINTING_DEVICE_ENABLE
