@@ -28,7 +28,7 @@ enum charybdis_keymap_layers {
 };
 
 #define SPC_NAV LT(LAYER_NAVIGATION, KC_SPC)
-#define FUN_BSPC LT(LAYER_FUNCTION, KC_BSPC)
+#define FUN_BSPC LT(LAYER_FUNCTION, KC_ENT)
 #define PTR_TG TG(LAYER_POINTER)
 #define ESC_SYM LT(LAYER_SYMBOLS, KC_ESC)
 #define TAB_NUM LT(LAYER_NUMERAL, KC_TAB)
@@ -78,7 +78,7 @@ enum charybdis_keymap_layers {
 #define LAYOUT_LAYER_FUNCTION                                                                 \
     _______________DEAD_HALF_ROW_______________, XXXXXXX,   KC_F7,   KC_F8,   KC_F9,  KC_F12, \
     KC_MPRV, KC_VOLD, KC_MUTE, KC_VOLU, KC_MNXT, XXXXXXX,   KC_F4,   KC_F5,   KC_F6,  KC_F11, \
-    XXXXXXX, XXXXXXX,  EE_CLR, QK_BOOT, XXXXXXX, XXXXXXX,   KC_F1,   KC_F2,   KC_F3,  KC_F10, \
+    XXXXXXX, QK_BOOT, EE_CLR,   PTR_TG, XXXXXXX, XXXXXXX,   KC_F1,   KC_F2,   KC_F3,  KC_F10, \
                       KC_BSPC, _______, _______, KC_MPLY, PTR_TG
 
 /**
