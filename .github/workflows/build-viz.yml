@@ -41,6 +41,17 @@ jobs:
           import re
           from pathlib import Path
 
+          def resolve_keymap_path(keyboard, keymap):
+              """Resolve keymap path, stripping QMK variants if needed."""
+              parts = keyboard.split("/")
+              # Try progressively shorter paths to handle QMK variants
+              for i in range(len(parts), 0, -1):
+                  base = "/".join(parts[:i])
+                  p = Path("keyboards") / base / "keymaps" / keymap / "keymap.c"
+                  if p.exists():
+                      return p
+              return Path("keyboards") / keyboard / "keymaps" / keymap / "keymap.c"
+
           with open("qmk.json", "r", encoding="utf-8") as f:
               qmk_json = f.read()
           qmk_json = re.sub(r",(\s*[}\\]])", r"\1", qmk_json)
@@ -50,7 +61,7 @@ jobs:
               if not isinstance(target, list) or len(target) < 2:
                   continue
               keyboard, keymap = target[0], target[1]
-              path = Path("keyboards") / keyboard / "keymaps" / keymap / "keymap.c"
+              path = resolve_keymap_path(keyboard, keymap)
               slug = f"{keyboard.replace('/', '-')}--{keymap}"
               print(f"{path}\t{slug}")
           PY
