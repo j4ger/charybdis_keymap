@@ -97,9 +97,9 @@ enum charybdis_keymap_layers {
  */
 #define LAYOUT_LAYER_POINTER                                                                  \
     XXXXXXX, XXXXXXX, KC_WWW_FORWARD, KC_WWW_BACK, XXXXXXX, KC_WWW_BACK, KC_WWW_FORWARD, XXXXXXX, XXXXXXX, XXXXXXX, \
-    XXXXXXX, MS_BTN3, MS_BTN2, MS_BTN1, XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX, \
-    DPI_MOD, S_D_MOD, DRGSCRL, SNIPING, SNP_TOG, XXXXXXX, MS_BTN1, MS_BTN2, MS_BTN3, XXXXXXX, \
-                      SNIPING, DRGSCRL,  PTR_TG,  PTR_TG, DRGSCRL
+    XXXXXXX, KC_BTN3, KC_BTN2, KC_BTN1, XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX, \
+    DPI_MOD, S_D_MOD, DRGSCRL, SNIPING, SNP_TOG, XXXXXXX, DRGSCRL, S_D_MOD, DPI_MOD, XXXXXXX, \
+                      KC_BTN1, DRGSCRL, PTR_TG, KC_BSPC, PTR_TG
 
 /**
  * \brief Navigation layer.
@@ -112,7 +112,7 @@ enum charybdis_keymap_layers {
 #define LAYOUT_LAYER_NAVIGATION                                                               \
     LCTL(KC_Z), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), LCTL(KC_A), _______________DEAD_HALF_ROW_______________, \
     ______________HOME_ROW_GACS_L______________, KC_CAPS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, \
-    XXXXXXX, XXXXXXX, TO(LAYER_GAMING),  PTR_TG, XXXXXXX,  KC_INS, KC_HOME, KC_PGUP, KC_PGDN,  KC_END, \
+    XXXXXXX, XXXXXXX, TO(GAMING_LAYER),  PTR_TG, XXXXXXX,  KC_INS, KC_HOME, KC_PGUP, KC_PGDN,  KC_END, \
                       XXXXXXX, _______, XXXXXXX,  KC_ENT, KC_BSPC
 
 /**
