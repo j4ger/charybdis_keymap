@@ -96,10 +96,10 @@ enum charybdis_keymap_layers {
  *             browser nav (top row).
  */
 #define LAYOUT_LAYER_POINTER                                                                  \
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_WWW_BACK, KC_WWW_FORWARD, XXXXXXX, XXXXXXX, XXXXXXX, \
+    XXXXXXX, XXXXXXX, KC_WWW_FORWARD, KC_WWW_BACK, XXXXXXX, KC_WWW_BACK, KC_WWW_FORWARD, XXXXXXX, XXXXXXX, XXXXXXX, \
     XXXXXXX, KC_BTN3, KC_BTN2, KC_BTN1, XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX, \
     DPI_MOD, S_D_MOD, DRGSCRL, SNIPING, SNP_TOG, XXXXXXX, DRGSCRL, S_D_MOD, DPI_MOD, XXXXXXX, \
-                      KC_BTN1, KC_BTN2, KC_BTN3, KC_BSPC, PTR_TG
+                      KC_BTN1, DRGSCRL, PTR_TG, KC_BSPC, PTR_TG
 
 /**
  * \brief Navigation layer.
@@ -112,7 +112,7 @@ enum charybdis_keymap_layers {
 #define LAYOUT_LAYER_NAVIGATION                                                               \
     LCTL(KC_Z), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), LCTL(KC_A), _______________DEAD_HALF_ROW_______________, \
     ______________HOME_ROW_GACS_L______________, KC_CAPS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, \
-    _______________DEAD_HALF_ROW_______________,  KC_INS, KC_HOME, KC_PGUP, KC_PGDN,  KC_END, \
+    XXXXXXX, XXXXXXX, TO(GAMING_LAYER),  PTR_TG, XXXXXXX,  KC_INS, KC_HOME, KC_PGUP, KC_PGDN,  KC_END, \
                       XXXXXXX, _______, XXXXXXX,  KC_ENT, KC_BSPC
 
 /**
@@ -137,7 +137,7 @@ enum charybdis_keymap_layers {
  * Thumbs mirror: grave becomes tilde, minus becomes underscore.
  */
 #define LAYOUT_LAYER_SYMBOLS                                                                  \
-    KC_RCBR,  KC_PLUS, KC_COLN, KC_PIPE,  KC_LCBR, _______________DEAD_HALF_ROW_______________, \
+    KC_RCBR,  KC_LCBR, KC_COLN, KC_PLUS,  KC_PIPE, _______________DEAD_HALF_ROW_______________, \
     KC_PERC,   KC_DLR, KC_HASH,   KC_AT,  KC_EXLM, ______________HOME_ROW_GACS_R______________, \
     KC_RPRN,  KC_LPRN, KC_ASTR, KC_AMPR,  KC_CIRC, _______________DEAD_HALF_ROW_______________, \
                       TO(LAYER_GAMING), KC_TILD, KC_UNDS, _______, XXXXXXX
