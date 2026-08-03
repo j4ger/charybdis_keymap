@@ -97,7 +97,7 @@ enum charybdis_keymap_layers {
  */
 #define LAYOUT_LAYER_POINTER                                                                  \
     XXXXXXX, XXXXXXX, KC_WWW_FORWARD, KC_WWW_BACK, XXXXXXX, XXXXXXX, KC_WWW_BACK, KC_WWW_FORWARD, XXXXXXX, XXXXXXX, \
-    XXXXXXX, MS_BTN3, MS_BTN2, MS_BTN1, XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX, \
+    XXXXXXX, MS_BTN3, MS_BTN2, MS_BTN1, XXXXXXX, ______________HOME_ROW_GACS_R______________, \
     DPI_MOD, DPI_RMOD, DRGSCRL, S_D_MOD, S_D_RMOD, XXXXXXX, MS_BTN1, MS_BTN2, MS_BTN3, XXXXXXX, \
                       SNIPING,  PTR_TG, DRGSCRL,  PTR_TG, DRGSCRL
 
