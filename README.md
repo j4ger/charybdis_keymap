@@ -56,4 +56,4 @@ Backspace is supported (raw accuracy is preserved; corrections don't reduce the 
 ```sh
 python3 tests/test_viz.py
 ```
-Stdlib-only; verifies keymap parsing (35 keys, 9 layers, thumb layout), HTML marker generation, and the finger-mapping helper.
+Stdlib-only; verifies keymap parsing (35 keys, 8 layers, thumb layout), HTML marker generation, and the finger-mapping helper.

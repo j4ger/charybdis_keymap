@@ -30,6 +30,7 @@ enum charybdis_keymap_layers {
 #define SPC_NAV LT(LAYER_NAVIGATION, KC_SPC)
 #define FUN_BSPC LT(LAYER_FUNCTION, KC_ENT)
 #define PTR_TG TG(LAYER_POINTER)
+#define SFT_PTR_TG LSFT_T(KC_NO)
 #define ESC_SYM LT(LAYER_SYMBOLS, KC_ESC)
 #define TAB_NUM LT(LAYER_NUMERAL, KC_TAB)
 #define ESC_AUX LT(LAYER_GAMING_AUX, KC_ESC)
@@ -111,7 +112,7 @@ enum charybdis_keymap_layers {
  */
 #define LAYOUT_LAYER_NAVIGATION                                                               \
     LCTL(KC_Z), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), LCTL(KC_A), _______________DEAD_HALF_ROW_______________, \
-    KC_LGUI, KC_LALT, KC_LCTL, LSFT_T(PTR_TG), XXXXXXX, KC_CAPS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, \
+    KC_LGUI, KC_LALT, KC_LCTL, SFT_PTR_TG, XXXXXXX, KC_CAPS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, \
     XXXXXXX, XXXXXXX, TO(LAYER_GAMING),  PTR_TG, XXXXXXX,  KC_INS, KC_HOME, KC_PGUP, KC_PGDN,  KC_END, \
                       XXXXXXX, _______, XXXXXXX,  KC_ENT, KC_BSPC
 
@@ -202,3 +203,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [LAYER_GAMING_AUX] = LAYOUT_wrapper(LAYOUT_LAYER_GAMING_AUX),
 };
 // clang-format on
+
+/* MT() only accepts basic keycodes, so use a mod-tap on KC_NO and intercept
+ * the tap in process_record_user to toggle the pointer layer. */
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case SFT_PTR_TG:
+            if (record->tap.count && record->event.pressed) {
+                layer_invert(LAYER_POINTER);
+                return false;
+            }
+            break;
+    }
+    return true;
+}
