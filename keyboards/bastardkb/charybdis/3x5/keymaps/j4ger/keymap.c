@@ -111,7 +111,7 @@ enum charybdis_keymap_layers {
  * base layer to avoid having to layer change mid edit and to enable auto-repeat.
  */
 #define LAYOUT_LAYER_NAVIGATION                                                               \
-    LCTL(KC_Z), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), LCTL(KC_A), _______________DEAD_HALF_ROW_______________, \
+    LCTL(KC_Z), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), LCTL(KC_A), XXXXXXX, KC_DEL, KC_PSCR, XXXXXXX, XXXXXXX, \
     KC_LGUI, KC_LALT, KC_LCTL, SFT_PTR_TG, XXXXXXX, KC_CAPS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, \
     XXXXXXX, XXXXXXX, TO(LAYER_GAMING),  PTR_TG, XXXXXXX,  KC_INS, KC_HOME, KC_PGUP, KC_PGDN,  KC_END, \
                       XXXXXXX, _______, XXXXXXX,  KC_ENT, KC_BSPC
