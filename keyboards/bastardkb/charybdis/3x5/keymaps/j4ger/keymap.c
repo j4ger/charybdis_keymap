@@ -135,7 +135,7 @@ enum charybdis_keymap_layers {
  */
 #define LAYOUT_LAYER_SYMBOLS                                                                  \
     XXXXXXX,  XXXXXXX, KC_LCBR, KC_RCBR,  XXXXXXX, _______________DEAD_HALF_ROW_______________, \
-    KC_PERC,   KC_DLR, KC_LBRK, KC_RBRK,  XXXXXXX, ______________HOME_ROW_GACS_R______________, \
+    KC_PERC,   KC_DLR, KC_LBRC, KC_RBRC,  XXXXXXX, ______________HOME_ROW_GACS_R______________, \
     KC_AMPR,  KC_CIRC, KC_LPRN, KC_RPRN,  XXXXXXX, _______________DEAD_HALF_ROW_______________, \
                       KC_HASH, KC_AT, KC_EXLM, _______, XXXXXXX
 
