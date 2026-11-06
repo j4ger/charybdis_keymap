@@ -121,27 +121,23 @@ enum charybdis_keymap_layers {
  *
  * Primary left-hand layer (right home thumb) is numerals and symbols. Numerals
  * are in the standard numpad locations with symbols in the remaining positions.
- * Also provides entry to the gaming layer.
  */
 #define LAYOUT_LAYER_NUMERAL                                                                  \
-    KC_RBRC,  KC_EQL, KC_SCLN, KC_BSLS, KC_LBRC, _______________DEAD_HALF_ROW_______________, \
+    XXXXXXX, XXXXXXX, KC_PIPE, KC_PLUS, XXXXXXX, _______________DEAD_HALF_ROW_______________, \
     KC_5,       KC_4,    KC_3,    KC_2,    KC_1, ______________HOME_ROW_GACS_R______________, \
     KC_0,       KC_9,    KC_8,    KC_7,    KC_6, _______________DEAD_HALF_ROW_______________, \
-             TO(LAYER_GAMING),  KC_GRV, KC_MINS, XXXXXXX, _______
+             KC_TILD,  KC_UNDS, KC_MINS, XXXXXXX, _______
 
 /**
  * \brief Symbols layer.
  *
- * Secondary left-hand layer is the shift-equivalent of the numeral layer.
- * Each left-hand key on this layer maps to the shifted version of the
- * same position on the numeral layer, making symbol locations predictable.
- * Thumbs mirror: grave becomes tilde, minus becomes underscore.
+ * Heavily remapped.
  */
 #define LAYOUT_LAYER_SYMBOLS                                                                  \
-    KC_RCBR,  KC_LCBR, KC_COLN, KC_PLUS,  KC_PIPE, _______________DEAD_HALF_ROW_______________, \
-    KC_PERC,   KC_DLR, KC_HASH,   KC_AT,  KC_EXLM, ______________HOME_ROW_GACS_R______________, \
-    KC_RPRN,  KC_LPRN, KC_ASTR, KC_AMPR,  KC_CIRC, _______________DEAD_HALF_ROW_______________, \
-                      TO(LAYER_GAMING), KC_TILD, KC_UNDS, _______, XXXXXXX
+    XXXXXXX,  XXXXXXX, KC_LCBR, KC_RCBR,  XXXXXXX, _______________DEAD_HALF_ROW_______________, \
+    KC_PERC,   KC_DLR, KC_LBRK, KC_RBRK,  XXXXXXX, ______________HOME_ROW_GACS_R______________, \
+    KC_AMPR,  KC_CIRC, KC_LPRN, KC_RPRN,  XXXXXXX, _______________DEAD_HALF_ROW_______________, \
+                      KC_HASH, KC_AT, KC_EXLM, _______, XXXXXXX
 
 /**
  * \brief Gaming layer.
